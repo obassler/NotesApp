@@ -1,7 +1,9 @@
 package com.osu.notes
 
-import com.android.identity.util.UUID
+import kotlinx.serialization.Serializable
+import java.util.UUID
 
+@Serializable
 data class Note(
     val id: String = UUID.randomUUID().toString(),
     val title: String,

@@ -54,6 +54,9 @@ android {
 
 dependencies {
 
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
+    implementation(libs.reorderable)
     implementation(libs.androidx.activity.compose.v170)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

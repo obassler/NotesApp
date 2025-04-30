@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -39,51 +41,19 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        noteManager = ViewModelProvider(this)[NoteManager::class.java]
+        noteManager = ViewModelProvider(this, NoteManager.Factory(applicationContext))[NoteManager::class.java]
 
         enableEdgeToEdge()
         setContent {
             NotesTheme {
-                NoteListScreen(noteManager)
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    NoteListScreen(noteManager = noteManager)
+                }
             }
         }
     }
 }
 
-@Composable
-fun NoteItem(
-    note: Note,
-    onClick: () -> Unit,
-    onDelete: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-            .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                Text(text = note.title, style = MaterialTheme.typography.titleMedium)
-                Text(
-                    text = note.content,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 2
-                )
-            }
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete Note")
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -105,19 +75,23 @@ fun AddNoteDialog(
                     label = { Text("Title") },
                     modifier = Modifier.fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 TextField(
                     value = content,
                     onValueChange = { content = it },
                     label = { Text("Content") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().height(120.dp),
                     singleLine = false
                 )
             }
         },
         confirmButton = {
             TextButton(
-                onClick = { onNoteAdded(title, content) },
+                onClick = {
+                    if (title.isNotBlank()) {
+                        onNoteAdded(title, content)
+                    }
+                },
                 enabled = title.isNotBlank()
             ) {
                 Text("Add")
