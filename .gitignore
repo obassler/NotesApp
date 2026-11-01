@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# IDE
+.idea/
+temp_backup_idea/
